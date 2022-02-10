@@ -22,11 +22,11 @@ public class RpcResponse<T> implements Serializable
         return rpcResponse;
     }
 
-    public static <T> RpcResponse<T> fail(T data)
+    public static <T> RpcResponse<T> fail(ResponseCode code)
     {
         RpcResponse<T> rpcResponse = new RpcResponse<T>();
-        rpcResponse.setData(data);
-        rpcResponse.setStatusCode(ResponseCode.FAIL.getCode());
+        rpcResponse.setStatusCode(code.getCode());
+        rpcResponse.setMessage(code.getMessage());
         return rpcResponse;
     }
 }

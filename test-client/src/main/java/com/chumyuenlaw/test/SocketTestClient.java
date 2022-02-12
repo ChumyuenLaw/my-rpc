@@ -5,7 +5,7 @@ import com.chumyuenlaw.rpc.api.HelloObject;
 import com.chumyuenlaw.rpc.api.HelloService;
 import com.chumyuenlaw.rpc.socket.client.SocketClient;
 
-public class TestClient
+public class SocketTestClient
 {
     public static void main(String[] args)
     {
@@ -13,7 +13,7 @@ public class TestClient
         RpcClientProxy proxy = new RpcClientProxy(client);
         HelloObject helloObject = new HelloObject(12, "Test message");
         HelloService helloService = proxy.getProxy(HelloService.class);
-        String res =helloService.hello(helloObject);
+        String res = helloService.hello(helloObject);
         System.out.println(res);
     }
 }

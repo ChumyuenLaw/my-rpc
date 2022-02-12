@@ -5,7 +5,7 @@ import com.chumyuenlaw.rpc.registry.DefaultServiceRegistry;
 import com.chumyuenlaw.rpc.registry.ServiceRegistry;
 import com.chumyuenlaw.rpc.socket.server.SocketServer;
 
-public class TestServer
+public class SocketTestServer
 {
     public static void main(String[] args)
     {

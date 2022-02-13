@@ -26,6 +26,8 @@ public interface CommonSerializer
     {
         switch (code)
         {
+            case 0:
+                return new KryoSerializer();
             case 1:
                 return new JSONSerializer();
             default:

@@ -30,6 +30,8 @@ public interface CommonSerializer
                 return new KryoSerializer();
             case 1:
                 return new JSONSerializer();
+            case 2:
+                return new HessianSerializer();
             default:
                 return null;
         }

@@ -3,6 +3,7 @@ package com.chumyuenlaw.rpc.netty.server;
 import com.chumyuenlaw.rpc.RpcServer;
 import com.chumyuenlaw.rpc.codec.CommonDecoder;
 import com.chumyuenlaw.rpc.codec.CommonEncoder;
+import com.chumyuenlaw.rpc.serializer.CommonSerializer;
 import com.chumyuenlaw.rpc.serializer.HessianSerializer;
 import com.chumyuenlaw.rpc.serializer.JSONSerializer;
 import com.chumyuenlaw.rpc.serializer.KryoSerializer;
@@ -34,6 +35,8 @@ public class NettyServer implements RpcServer
 {
     private static final Logger logger = LoggerFactory.getLogger(NettyServer.class);
 
+    private CommonSerializer serializer;
+
     @Override
     public void start(int port)
     {
@@ -59,7 +62,7 @@ public class NettyServer implements RpcServer
                             ChannelPipeline pipeline = socketChannel.pipeline();
                             pipeline//.addLast(new CommonEncoder(new KryoSerializer()))
                                     //.addLast(new CommonEncoder(new JSONSerializer()))
-                                    .addLast(new CommonEncoder(new HessianSerializer()))
+                                    .addLast(new CommonEncoder(serializer))
                                     .addLast(new CommonDecoder())
                                     .addLast(new NettyServerHandler());
                         }
@@ -74,5 +77,11 @@ public class NettyServer implements RpcServer
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
         }
+    }
+
+    @Override
+    public void setSerializer(CommonSerializer serializer)
+    {
+        this.serializer = serializer;
     }
 }

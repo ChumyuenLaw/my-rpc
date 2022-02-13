@@ -1,5 +1,7 @@
 package com.chumyuenlaw.rpc;
 
+import com.chumyuenlaw.rpc.serializer.CommonSerializer;
+
 /**
  * <pre>
  * RpcServer 类
@@ -17,4 +19,6 @@ package com.chumyuenlaw.rpc;
 public interface RpcServer
 {
     void start(int port);
+
+    void setSerializer(CommonSerializer serializer);
 }

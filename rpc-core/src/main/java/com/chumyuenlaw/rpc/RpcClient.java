@@ -1,6 +1,7 @@
 package com.chumyuenlaw.rpc;
 
 import com.chumyuenlaw.rpc.entity.RpcRequest;
+import com.chumyuenlaw.rpc.serializer.CommonSerializer;
 
 /**
  * <pre>
@@ -19,4 +20,6 @@ import com.chumyuenlaw.rpc.entity.RpcRequest;
 public interface RpcClient
 {
     Object sendRequest(RpcRequest rpcRequest);
+
+    void setSerializer(CommonSerializer serializer);
 }

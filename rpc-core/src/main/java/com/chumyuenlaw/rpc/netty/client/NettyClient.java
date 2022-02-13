@@ -5,9 +5,13 @@ import com.chumyuenlaw.rpc.codec.CommonDecoder;
 import com.chumyuenlaw.rpc.codec.CommonEncoder;
 import com.chumyuenlaw.rpc.entity.RpcRequest;
 import com.chumyuenlaw.rpc.entity.RpcResponse;
+import com.chumyuenlaw.rpc.enumeration.RpcError;
+import com.chumyuenlaw.rpc.exception.RpcException;
+import com.chumyuenlaw.rpc.serializer.CommonSerializer;
 import com.chumyuenlaw.rpc.serializer.HessianSerializer;
 import com.chumyuenlaw.rpc.serializer.JSONSerializer;
 import com.chumyuenlaw.rpc.serializer.KryoSerializer;
+import com.chumyuenlaw.rpc.util.RpcMessageChecker;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -38,6 +42,7 @@ public class NettyClient implements RpcClient
     private String host;
     private int port;
     private static final Bootstrap bootstrap;
+    private CommonSerializer serializer;
 
     public NettyClient(String host, int port)
     {
@@ -51,25 +56,30 @@ public class NettyClient implements RpcClient
         bootstrap = new Bootstrap();
         bootstrap.group(group)
                 .channel(NioSocketChannel.class)
-                .option(ChannelOption.SO_KEEPALIVE, true)
-                .handler(new ChannelInitializer<SocketChannel>()
-                {
-                    @Override
-                    protected void initChannel(SocketChannel socketChannel) throws Exception
-                    {
-                        ChannelPipeline pipeline = socketChannel.pipeline();
-                        pipeline.addLast(new CommonDecoder())
-                                //.addLast(new CommonEncoder(new KryoSerializer()))
-                                //.addLast(new CommonEncoder(new JSONSerializer()))
-                                .addLast(new CommonEncoder(new HessianSerializer()))
-                                .addLast(new NettyClientHandler());
-                    }
-                });
+                .option(ChannelOption.SO_KEEPALIVE, true);
     }
 
     @Override
     public Object sendRequest(RpcRequest rpcRequest)
     {
+        if (serializer == null)
+        {
+            logger.error("未设置序列化器");
+            throw new RpcException(RpcError.SERIALIZER_NOT_FOUND);
+        }
+        bootstrap.handler(new ChannelInitializer<SocketChannel>()
+        {
+            @Override
+            protected void initChannel(SocketChannel socketChannel) throws Exception
+            {
+                ChannelPipeline pipeline = socketChannel.pipeline();
+                pipeline.addLast(new CommonDecoder())
+                        //.addLast(new CommonEncoder(new KryoSerializer()))
+                        //.addLast(new CommonEncoder(new JSONSerializer()))
+                        .addLast(new CommonEncoder(serializer))
+                        .addLast(new NettyClientHandler());
+            }
+        });
         try
         {
             ChannelFuture future = bootstrap.connect(host, port).sync();
@@ -85,8 +95,9 @@ public class NettyClient implements RpcClient
                 });
                 channel.closeFuture().sync();
 
-                AttributeKey<RpcResponse> key = AttributeKey.valueOf("rpcResponse");
+                AttributeKey<RpcResponse> key = AttributeKey.valueOf("rpcResponse" + rpcRequest.getRequestId());
                 RpcResponse rpcResponse = channel.attr(key).get();
+                RpcMessageChecker.check(rpcRequest, rpcResponse);
                 return rpcResponse.getData();
             }
         } catch (InterruptedException e)
@@ -94,5 +105,11 @@ public class NettyClient implements RpcClient
             logger.error("发送信息时有错误发生：", e);
         }
         return null;
+    }
+
+    @Override
+    public void setSerializer(CommonSerializer serializer)
+    {
+        this.serializer = serializer;
     }
 }

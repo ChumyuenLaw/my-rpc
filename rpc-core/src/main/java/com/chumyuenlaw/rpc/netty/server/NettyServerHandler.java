@@ -48,7 +48,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<RpcRequest>
             String interfaceName = msg.getInterfaceName();
             Object service = serviceRegistry.getService(interfaceName);
             Object result = requestHandler.handle(msg, service);
-            ChannelFuture future = channelHandlerContext.writeAndFlush(RpcResponse.success(result));
+            ChannelFuture future = channelHandlerContext.writeAndFlush(RpcResponse.success(result, msg.getRequestId()));
 
             future.addListener(ChannelFutureListener.CLOSE);
         } finally

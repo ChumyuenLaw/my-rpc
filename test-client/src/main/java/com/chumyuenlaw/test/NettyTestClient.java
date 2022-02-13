@@ -5,6 +5,7 @@ import com.chumyuenlaw.rpc.RpcClientProxy;
 import com.chumyuenlaw.rpc.api.HelloObject;
 import com.chumyuenlaw.rpc.api.HelloService;
 import com.chumyuenlaw.rpc.netty.client.NettyClient;
+import com.chumyuenlaw.rpc.serializer.HessianSerializer;
 
 /**
  * <pre>
@@ -25,6 +26,7 @@ public class NettyTestClient
     public static void main(String[] args)
     {
         RpcClient client = new NettyClient("127.0.0.1", 9001);
+        client.setSerializer(new HessianSerializer());
         RpcClientProxy rpcClientProxy = new RpcClientProxy(client);
         HelloService helloService = rpcClientProxy.getProxy(HelloService.class);
         HelloObject helloObject = new HelloObject(12, "Netty test msg.");

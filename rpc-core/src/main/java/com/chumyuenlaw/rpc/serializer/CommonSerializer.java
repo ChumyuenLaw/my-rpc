@@ -32,6 +32,8 @@ public interface CommonSerializer
                 return new JSONSerializer();
             case 2:
                 return new HessianSerializer();
+            case 3:
+                return new ProtostuffSerializer();
             default:
                 return null;
         }

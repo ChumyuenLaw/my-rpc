@@ -5,6 +5,7 @@ import com.chumyuenlaw.rpc.netty.server.NettyServer;
 import com.chumyuenlaw.rpc.registry.DefaultServiceRegistry;
 import com.chumyuenlaw.rpc.registry.ServiceRegistry;
 import com.chumyuenlaw.rpc.serializer.KryoSerializer;
+import com.chumyuenlaw.rpc.serializer.ProtostuffSerializer;
 
 /**
  * <pre>
@@ -28,7 +29,7 @@ public class NettyTestServer
         ServiceRegistry registry = new DefaultServiceRegistry();
         registry.register(helloService);
         NettyServer server = new NettyServer();
-        server.setSerializer(new KryoSerializer());
+        server.setSerializer(new ProtostuffSerializer());
         server.start(9001);
     }
 }

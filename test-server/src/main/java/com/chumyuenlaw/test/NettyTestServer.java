@@ -1,10 +1,8 @@
 package com.chumyuenlaw.test;
 
 import com.chumyuenlaw.rpc.api.HelloService;
-import com.chumyuenlaw.rpc.netty.server.NettyServer;
-import com.chumyuenlaw.rpc.registry.DefaultServiceRegistry;
+import com.chumyuenlaw.rpc.transport.netty.server.NettyServer;
 import com.chumyuenlaw.rpc.registry.ServiceRegistry;
-import com.chumyuenlaw.rpc.serializer.KryoSerializer;
 import com.chumyuenlaw.rpc.serializer.ProtostuffSerializer;
 
 /**
@@ -26,10 +24,9 @@ public class NettyTestServer
     public static void main(String[] args)
     {
         HelloService helloService = new HelloServiceImpl();
-        ServiceRegistry registry = new DefaultServiceRegistry();
-        registry.register(helloService);
-        NettyServer server = new NettyServer();
+        NettyServer server = new NettyServer("127.0.0.1", 9002);
         server.setSerializer(new ProtostuffSerializer());
-        server.start(9001);
+        server.publishService(helloService, HelloService.class);
+        // nacos dir: D:\nacos-server-1.3.0\nacos\bin
     }
 }

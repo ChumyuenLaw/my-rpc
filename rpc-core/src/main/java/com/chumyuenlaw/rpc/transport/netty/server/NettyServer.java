@@ -47,12 +47,18 @@ public class NettyServer implements RpcServer
     private final ServiceRegistry serviceRegistry;
     private final ServiceProvider serviceProvider;
 
-    private CommonSerializer serializer;
+    private final CommonSerializer serializer;
 
     public NettyServer(String host, int port)
     {
+        this(host, port, DEFAULT_SERIALIZER);
+    }
+
+    public NettyServer(String host, int port, Integer serializerCode)
+    {
         this.host = host;
         this.port = port;
+        this.serializer = CommonSerializer.getByCode(serializerCode);
         serviceRegistry = new NacosServiceRegistry();
         serviceProvider = new ServiceProviderImpl();
     }
@@ -98,12 +104,6 @@ public class NettyServer implements RpcServer
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
         }
-    }
-
-    @Override
-    public void setSerializer(CommonSerializer serializer)
-    {
-        this.serializer = serializer;
     }
 
     @Override

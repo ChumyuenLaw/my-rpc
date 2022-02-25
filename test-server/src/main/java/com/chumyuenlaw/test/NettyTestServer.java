@@ -24,7 +24,6 @@ public class NettyTestServer
     {
         HelloService helloService = new HelloServiceImpl();
         NettyServer server = new NettyServer("127.0.0.1", 9002);
-        server.setSerializer(new ProtostuffSerializer());
         server.publishService(helloService, HelloService.class);
         // nacos dir: D:\nacos-server-1.3.0\nacos\bin\startup.cmd
     }

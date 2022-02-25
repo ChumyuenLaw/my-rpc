@@ -27,8 +27,6 @@ public class ShutdownHook
 
     private static final ShutdownHook shutdownHook = new ShutdownHook();
 
-    private final ExecutorService threadPool = ThreadPoolFactory.createDefaultThreadPool("shutdown-hook");
-
     public static ShutdownHook getShutdownHook()
     {
         return shutdownHook;
@@ -39,7 +37,7 @@ public class ShutdownHook
         logger.info("服务端关闭前将自动注销所有服务");
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             NacosUtil.clearRegistry();
-            threadPool.shutdown();
+            ThreadPoolFactory.shutdownAll();
         }));
     }
 }

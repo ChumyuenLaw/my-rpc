@@ -11,7 +11,6 @@ public class SocketTestClient
     public static void main(String[] args)
     {
         SocketClient client = new SocketClient();
-        client.setSerializer(new KryoSerializer());
         RpcClientProxy proxy = new RpcClientProxy(client);
         HelloObject helloObject = new HelloObject(12, "Socket Test message");
         HelloService helloService = proxy.getProxy(HelloService.class);

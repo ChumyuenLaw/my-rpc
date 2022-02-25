@@ -39,11 +39,17 @@ public class NettyClient implements RpcClient
 
 
     private final ServiceDiscovery serviceDiscovery;
-    private CommonSerializer serializer;
+    private final CommonSerializer serializer;
 
     public NettyClient()
     {
+        this(DEFAULT_SERIALIZER);
+    }
+
+    public NettyClient(Integer serializerCode)
+    {
         serviceDiscovery = new NacosServiceDiscovery();
+        serializer = CommonSerializer.getByCode(serializerCode);
     }
 
     @Override
@@ -84,11 +90,5 @@ public class NettyClient implements RpcClient
             logger.error("发送信息时有错误发生：", e);
         }
         return result.get();
-    }
-
-    @Override
-    public void setSerializer(CommonSerializer serializer)
-    {
-        this.serializer = serializer;
     }
 }

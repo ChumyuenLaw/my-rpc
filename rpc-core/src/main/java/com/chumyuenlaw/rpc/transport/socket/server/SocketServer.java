@@ -26,7 +26,7 @@ public class SocketServer implements RpcServer
 
     private final ExecutorService threadPool;
     private RequestHandler requestHandler = new RequestHandler();
-    private CommonSerializer serializer;
+    private final CommonSerializer serializer;
 
     private final String host;
     private final int port;
@@ -36,10 +36,16 @@ public class SocketServer implements RpcServer
 
     public SocketServer(String host, int port)
     {
+        this(host, port, DEFAULT_SERIALIZER);
+    }
+
+    public SocketServer(String host, int port, Integer serializerCode)
+    {
         this.host = host;
         this.port = port;
         serviceProvider = new ServiceProviderImpl();
         serviceRegistry = new NacosServiceRegistry();
+        serializer = CommonSerializer.getByCode(serializerCode);
         threadPool = ThreadPoolFactory.createDefaultThreadPool("socket-rpc-framework");
     }
 
@@ -66,12 +72,6 @@ public class SocketServer implements RpcServer
         {
             logger.error("服务器启动出错：", e);
         }
-    }
-
-    @Override
-    public void setSerializer(CommonSerializer serializer)
-    {
-        this.serializer = serializer;
     }
 
     @Override

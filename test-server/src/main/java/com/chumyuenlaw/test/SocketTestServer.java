@@ -10,7 +10,6 @@ public class SocketTestServer
     {
         HelloService helloService = new HelloServiceImpl2();
         SocketServer socketServer = new SocketServer("127.0.0.1", 9001);
-        socketServer.setSerializer(new KryoSerializer());
         socketServer.publishService(helloService, HelloService.class);
     }
 }

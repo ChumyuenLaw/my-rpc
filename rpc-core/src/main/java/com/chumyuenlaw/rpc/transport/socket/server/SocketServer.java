@@ -1,6 +1,7 @@
 package com.chumyuenlaw.rpc.transport.socket.server;
 
 import com.chumyuenlaw.rpc.handler.RequestHandler;
+import com.chumyuenlaw.rpc.hook.ShutdownHook;
 import com.chumyuenlaw.rpc.provider.ServiceProvider;
 import com.chumyuenlaw.rpc.provider.ServiceProviderImpl;
 import com.chumyuenlaw.rpc.registry.NacosServiceRegistry;
@@ -9,7 +10,7 @@ import com.chumyuenlaw.rpc.enumeration.RpcError;
 import com.chumyuenlaw.rpc.exception.RpcException;
 import com.chumyuenlaw.rpc.registry.ServiceRegistry;
 import com.chumyuenlaw.rpc.serializer.CommonSerializer;
-import com.chumyuenlaw.rpc.util.ThreadPoolFactory;
+import com.chumyuenlaw.rpc.factory.ThreadPoolFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,6 +54,7 @@ public class SocketServer implements RpcServer
         try(ServerSocket serverSocket = new ServerSocket(port))
         {
             logger.info("服务器启动...");
+            ShutdownHook.getShutdownHook().addClearAllHook();
             Socket socket;
             while ((socket = serverSocket.accept()) != null)
             {

@@ -1,4 +1,4 @@
-package com.chumyuenlaw.rpc.util;
+package com.chumyuenlaw.rpc.factory;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 

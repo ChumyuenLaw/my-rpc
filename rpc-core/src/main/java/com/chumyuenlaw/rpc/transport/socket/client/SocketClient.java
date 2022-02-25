@@ -1,6 +1,8 @@
 package com.chumyuenlaw.rpc.transport.socket.client;
 
+import com.chumyuenlaw.rpc.registry.NacosServiceDiscovery;
 import com.chumyuenlaw.rpc.registry.NacosServiceRegistry;
+import com.chumyuenlaw.rpc.registry.ServiceDiscovery;
 import com.chumyuenlaw.rpc.registry.ServiceRegistry;
 import com.chumyuenlaw.rpc.transport.RpcClient;
 import com.chumyuenlaw.rpc.entity.RpcRequest;
@@ -23,13 +25,13 @@ public class SocketClient implements RpcClient
 {
     private static final Logger logger = LoggerFactory.getLogger(SocketClient.class);
 
-    private ServiceRegistry serviceRegistry;
+    private final ServiceDiscovery serviceDiscovery;
 
     private CommonSerializer serializer;
 
     public SocketClient()
     {
-        serviceRegistry = new NacosServiceRegistry();
+        serviceDiscovery = new NacosServiceDiscovery();
     }
 
     @Override
@@ -40,7 +42,7 @@ public class SocketClient implements RpcClient
             logger.error("未设置序列化器");
             throw new RpcException(RpcError.SERIALIZER_NOT_FOUND);
         }
-        InetSocketAddress inetSocketAddress = serviceRegistry.lookupService(rpcRequest.getInterfaceName());
+        InetSocketAddress inetSocketAddress = serviceDiscovery.lookupService(rpcRequest.getInterfaceName());
 
         try(Socket socket = new Socket())
         {

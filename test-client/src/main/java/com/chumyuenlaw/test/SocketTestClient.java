@@ -13,7 +13,7 @@ public class SocketTestClient
         SocketClient client = new SocketClient();
         client.setSerializer(new KryoSerializer());
         RpcClientProxy proxy = new RpcClientProxy(client);
-        HelloObject helloObject = new HelloObject(12, "Test message");
+        HelloObject helloObject = new HelloObject(12, "Socket Test message");
         HelloService helloService = proxy.getProxy(HelloService.class);
         String res = helloService.hello(helloObject);
         System.out.println(res);

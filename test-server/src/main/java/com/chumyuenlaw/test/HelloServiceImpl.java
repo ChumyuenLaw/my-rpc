@@ -9,9 +9,10 @@ public class HelloServiceImpl implements HelloService
 {
     private static final Logger logger = LoggerFactory.getLogger(HelloServiceImpl.class);
 
+    @Override
     public String hello(HelloObject helloObject)
     {
         logger.info("接收到：{}", helloObject.getMsg());
-        return "这是调用的返回值，id = " + helloObject.getId();
+        return "来自 Netty 服务：这是调用的返回值，id = " + helloObject.getId();
     }
 }

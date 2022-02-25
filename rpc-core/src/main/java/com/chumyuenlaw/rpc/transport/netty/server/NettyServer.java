@@ -2,6 +2,7 @@ package com.chumyuenlaw.rpc.transport.netty.server;
 
 import com.chumyuenlaw.rpc.enumeration.RpcError;
 import com.chumyuenlaw.rpc.exception.RpcException;
+import com.chumyuenlaw.rpc.hook.ShutdownHook;
 import com.chumyuenlaw.rpc.provider.ServiceProvider;
 import com.chumyuenlaw.rpc.provider.ServiceProviderImpl;
 import com.chumyuenlaw.rpc.registry.NacosServiceRegistry;
@@ -87,6 +88,7 @@ public class NettyServer implements RpcServer
                         }
                     });
             ChannelFuture future = serverBootstrap.bind(port).sync();
+            ShutdownHook.getShutdownHook().addClearAllHook();
             future.channel().closeFuture().sync();
         } catch (InterruptedException e)
         {

@@ -18,10 +18,12 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import io.netty.handler.timeout.IdleStateHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <pre>
@@ -46,7 +48,6 @@ public class NettyServer implements RpcServer
 
     private final ServiceRegistry serviceRegistry;
     private final ServiceProvider serviceProvider;
-
     private final CommonSerializer serializer;
 
     public NettyServer(String host, int port)
@@ -86,8 +87,7 @@ public class NettyServer implements RpcServer
                         protected void initChannel(SocketChannel socketChannel) throws Exception
                         {
                             ChannelPipeline pipeline = socketChannel.pipeline();
-                            pipeline//.addLast(new CommonEncoder(new KryoSerializer()))
-                                    //.addLast(new CommonEncoder(new JSONSerializer()))
+                            pipeline.addLast(new IdleStateHandler(30, 0, 0, TimeUnit.SECONDS))
                                     .addLast(new CommonEncoder(serializer))
                                     .addLast(new CommonDecoder())
                                     .addLast(new NettyServerHandler());

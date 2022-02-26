@@ -1,5 +1,6 @@
 package com.chumyuenlaw.test;
 
+import com.chumyuenlaw.rpc.serializer.CommonSerializer;
 import com.chumyuenlaw.rpc.transport.RpcClient;
 import com.chumyuenlaw.rpc.transport.RpcClientProxy;
 import com.chumyuenlaw.rpc.api.HelloObject;
@@ -25,7 +26,7 @@ public class NettyTestClient
 {
     public static void main(String[] args)
     {
-        RpcClient client = new NettyClient();
+        RpcClient client = new NettyClient(CommonSerializer.PROTOBUF_SERIALIZER);
         RpcClientProxy rpcClientProxy = new RpcClientProxy(client);
         HelloService helloService = rpcClientProxy.getProxy(HelloService.class);
         HelloObject helloObject = new HelloObject(12, "Netty test msg.");

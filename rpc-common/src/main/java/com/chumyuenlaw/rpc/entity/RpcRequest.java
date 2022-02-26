@@ -20,4 +20,6 @@ public class RpcRequest implements Serializable
     private Object[] parameters;
 
     private Class<?>[] paramTypes;
+
+    private Boolean heartBeat;
 }

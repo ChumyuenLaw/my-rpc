@@ -42,7 +42,7 @@ public class SingletonFactory
                     throw new RuntimeException(e.getMessage(), e);
                 }
             }
-            return clazz.cast(instance);
         }
+        return clazz.cast(instance);
     }
 }

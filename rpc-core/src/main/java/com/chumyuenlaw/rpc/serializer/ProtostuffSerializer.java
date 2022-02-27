@@ -2,7 +2,7 @@ package com.chumyuenlaw.rpc.serializer;
 
 import com.chumyuenlaw.rpc.enumeration.SerializerCode;
 import io.protostuff.LinkedBuffer;
-import io.protostuff.ProtobufIOUtil;
+import io.protostuff.ProtostuffIOUtil;
 import io.protostuff.Schema;
 import io.protostuff.runtime.RuntimeSchema;
 import org.slf4j.Logger;
@@ -41,7 +41,7 @@ public class ProtostuffSerializer implements CommonSerializer
         byte[] data;
         try
         {
-            data = ProtobufIOUtil.toByteArray(obj, schema, buffer);
+            data = ProtostuffIOUtil.toByteArray(obj, schema, buffer);
         } finally
         {
             buffer.clear();
@@ -54,7 +54,7 @@ public class ProtostuffSerializer implements CommonSerializer
     {
         Schema schema = getSchema(clazz);
         Object obj = schema.newMessage();
-        ProtobufIOUtil.mergeFrom(bytes, obj, schema);
+        ProtostuffIOUtil.mergeFrom(bytes, obj, schema);
         return obj;
     }
 

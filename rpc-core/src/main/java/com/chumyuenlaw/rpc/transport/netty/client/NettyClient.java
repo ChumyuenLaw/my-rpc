@@ -1,6 +1,8 @@
 package com.chumyuenlaw.rpc.transport.netty.client;
 
 import com.chumyuenlaw.rpc.factory.SingletonFactory;
+import com.chumyuenlaw.rpc.loadbalancer.LoadBalancer;
+import com.chumyuenlaw.rpc.loadbalancer.RandomLoadBalancer;
 import com.chumyuenlaw.rpc.registry.NacosServiceDiscovery;
 import com.chumyuenlaw.rpc.registry.NacosServiceRegistry;
 import com.chumyuenlaw.rpc.registry.ServiceDiscovery;
@@ -59,12 +61,22 @@ public class NettyClient implements RpcClient
 
     public NettyClient()
     {
-        this(DEFAULT_SERIALIZER);
+        this(DEFAULT_SERIALIZER, new RandomLoadBalancer());
+    }
+
+    public NettyClient(LoadBalancer loadBalancer)
+    {
+        this(DEFAULT_SERIALIZER, loadBalancer);
     }
 
     public NettyClient(Integer serializerCode)
     {
-        serviceDiscovery = new NacosServiceDiscovery();
+        this(serializerCode, new RandomLoadBalancer());
+    }
+
+    public NettyClient(Integer serializerCode, LoadBalancer loadBalancer)
+    {
+        serviceDiscovery = new NacosServiceDiscovery(loadBalancer);
         serializer = CommonSerializer.getByCode(serializerCode);
         unprocessedRequest = SingletonFactory.getInstance(UnprocessedRequest.class);
     }
@@ -82,6 +94,7 @@ public class NettyClient implements RpcClient
         try
         {
             InetSocketAddress inetSocketAddress = serviceDiscovery.lookupService(rpcRequest.getInterfaceName());
+            //logger.info("得到服务器地址：" + inetSocketAddress.getHostName() + ":" + inetSocketAddress.getPort());
             Channel channel = ChannelProvider.get(inetSocketAddress, serializer);
             if (!channel.isActive())
             {

@@ -4,6 +4,7 @@ import com.chumyuenlaw.rpc.entity.RpcRequest;
 import com.chumyuenlaw.rpc.entity.RpcResponse;
 import com.chumyuenlaw.rpc.transport.netty.client.NettyClient;
 import com.chumyuenlaw.rpc.transport.socket.client.SocketClient;
+import com.chumyuenlaw.rpc.util.RpcMessageChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,19 +45,20 @@ public class RpcClientProxy implements InvocationHandler
         return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class<?>[]{clazz}, this);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Object invoke(Object proxy, Method method, Object[] args)
     {
         logger.info("调用方法：{}#{}", method.getDeclaringClass().getName(), method.getName());
         RpcRequest rpcRequest = new RpcRequest(UUID.randomUUID().toString(), method.getDeclaringClass().getName(), method.getName(), args, method.getParameterTypes(), false);
-        Object result = null;
+        RpcResponse rpcResponse = null;
 
         if (client instanceof NettyClient)
         {
             CompletableFuture<RpcResponse> completableFuture = (CompletableFuture<RpcResponse>) client.sendRequest(rpcRequest);
             try
             {
-                result = completableFuture.get().getData();
+                rpcResponse = completableFuture.get();
             } catch (InterruptedException | ExecutionException e)
             {
                 logger.error("方法调用请求发送失败", e);
@@ -66,10 +68,9 @@ public class RpcClientProxy implements InvocationHandler
 
         if (client instanceof SocketClient)
         {
-            RpcResponse rpcResponse = (RpcResponse) client.sendRequest(rpcRequest);
-            result = rpcResponse;
+            rpcResponse = (RpcResponse) client.sendRequest(rpcRequest);
         }
-
-        return result;
+        RpcMessageChecker.check(rpcRequest, rpcResponse);
+        return rpcResponse.getData();
     }
 }

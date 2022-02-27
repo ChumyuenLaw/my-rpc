@@ -25,7 +25,7 @@ public class SocketServer implements RpcServer
     private static final Logger logger = LoggerFactory.getLogger(SocketServer.class);
 
     private final ExecutorService threadPool;
-    private RequestHandler requestHandler = new RequestHandler();
+    private final RequestHandler requestHandler = new RequestHandler();
     private final CommonSerializer serializer;
 
     private final String host;
@@ -46,26 +46,22 @@ public class SocketServer implements RpcServer
         serviceProvider = new ServiceProviderImpl();
         serviceRegistry = new NacosServiceRegistry();
         serializer = CommonSerializer.getByCode(serializerCode);
-        threadPool = ThreadPoolFactory.createDefaultThreadPool("socket-rpc-framework");
+        threadPool = ThreadPoolFactory.createDefaultThreadPool("socket-rpc-server");
     }
 
     @Override
     public void start()
     {
-        if (serializer == null)
+        try(ServerSocket serverSocket = new ServerSocket())
         {
-            logger.error("未设置序列化器");
-            throw new RpcException(RpcError.SERIALIZER_NOT_FOUND);
-        }
-        try(ServerSocket serverSocket = new ServerSocket(port))
-        {
+            serverSocket.bind(new InetSocketAddress(host, port));
             logger.info("服务器启动...");
             ShutdownHook.getShutdownHook().addClearAllHook();
             Socket socket;
             while ((socket = serverSocket.accept()) != null)
             {
                 logger.info("Client 连接：{} : {}", socket.getInetAddress(), socket.getPort());
-                threadPool.execute(new RequestHandlerThread(socket, requestHandler, serializer));
+                threadPool.execute(new SocketRequestHandlerThread(socket, requestHandler, serializer));
             }
             threadPool.shutdown();
         } catch (IOException e)
@@ -75,14 +71,14 @@ public class SocketServer implements RpcServer
     }
 
     @Override
-    public <T> void publishService(Object service, Class<T> serviceClass)
+    public <T> void publishService(T service, Class<T> serviceClass)
     {
         if (serializer == null)
         {
             logger.error("未设置序列化器");
             throw new RpcException(RpcError.SERIALIZER_NOT_FOUND);
         }
-        serviceProvider.addServiceProvider(service);
+        serviceProvider.addServiceProvider(service, serviceClass);
         serviceRegistry.register(serviceClass.getCanonicalName(), new InetSocketAddress(host, port));
         start();
     }

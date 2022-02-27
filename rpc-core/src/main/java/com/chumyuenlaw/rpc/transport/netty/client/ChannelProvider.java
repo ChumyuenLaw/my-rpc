@@ -78,7 +78,6 @@ public class ChannelProvider
             }
         });
         Channel channel = null;
-
         try
         {
             channel = connect(bootstrap, inetSocketAddress);

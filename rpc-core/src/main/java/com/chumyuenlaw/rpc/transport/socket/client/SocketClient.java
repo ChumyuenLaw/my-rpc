@@ -1,5 +1,7 @@
 package com.chumyuenlaw.rpc.transport.socket.client;
 
+import com.chumyuenlaw.rpc.loadbalancer.LoadBalancer;
+import com.chumyuenlaw.rpc.loadbalancer.RandomLoadBalancer;
 import com.chumyuenlaw.rpc.registry.NacosServiceDiscovery;
 import com.chumyuenlaw.rpc.registry.NacosServiceRegistry;
 import com.chumyuenlaw.rpc.registry.ServiceDiscovery;
@@ -31,12 +33,22 @@ public class SocketClient implements RpcClient
 
     public SocketClient()
     {
-        this(DEFAULT_SERIALIZER);
+        this(DEFAULT_SERIALIZER, new RandomLoadBalancer());
     }
 
     public SocketClient(Integer serializerCode)
     {
-        serviceDiscovery = new NacosServiceDiscovery();
+        this(serializerCode, new RandomLoadBalancer());
+    }
+
+    public SocketClient(LoadBalancer loadBalancer)
+    {
+        this(DEFAULT_SERIALIZER, loadBalancer);
+    }
+
+    public SocketClient(Integer serializerCode, LoadBalancer loadBalancer)
+    {
+        serviceDiscovery = new NacosServiceDiscovery(loadBalancer);
         serializer = CommonSerializer.getByCode(serializerCode);
     }
 
@@ -49,6 +61,7 @@ public class SocketClient implements RpcClient
             throw new RpcException(RpcError.SERIALIZER_NOT_FOUND);
         }
         InetSocketAddress inetSocketAddress = serviceDiscovery.lookupService(rpcRequest.getInterfaceName());
+        logger.info("得到服务器地址：" + inetSocketAddress.getHostName() + ":" + inetSocketAddress.getPort());
 
         try(Socket socket = new Socket())
         {
@@ -59,10 +72,10 @@ public class SocketClient implements RpcClient
             Object obj = ObjectReader.readObject(inputStream);
             RpcResponse rpcResponse = (RpcResponse)obj;
             RpcMessageChecker.check(rpcRequest, rpcResponse);
-            return rpcResponse.getData();
+            return rpcResponse;
         } catch (IOException e)
         {
-            logger.error("调用时有错误发生：", e);
+            logger.error("调用时有错误发生：" + e);
             throw new RpcException("服务端调用失败：", e);
         }
     }

@@ -73,13 +73,7 @@ public class HessianSerializer implements CommonSerializer
         {
             if (hessianInput != null)
             {
-                try
-                {
-                    hessianInput.close();
-                } catch (Exception e)
-                {
-                    logger.error("关闭 Hessian input 流时有错误发生：" + e);
-                }
+                hessianInput.close();
             }
         }
     }

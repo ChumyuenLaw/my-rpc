@@ -40,7 +40,7 @@ public class ObjectReader
         if (magicNumber != MAGIC_NUMBER)
         {
             logger.error("不识别的协议包：{}", magicNumber);
-            throw new RpcException(RpcError.UNKNOWN_PACKAGE_TYPE);
+            throw new RpcException(RpcError.UNKNOWN_PROTOCOL);
         }
 
         in.read(numberBytes);
@@ -53,7 +53,7 @@ public class ObjectReader
         else
         {
             logger.error("不识别的数据包：{}", packageCode);
-            throw new RpcException(RpcError.UNKNOWN_PROTOCOL);
+            throw new RpcException(RpcError.UNKNOWN_PACKAGE_TYPE);
         }
 
         in.read(numberBytes);
@@ -74,10 +74,10 @@ public class ObjectReader
 
     private static int bytesToInt(byte[] src)
     {
-        int value = (src[0] & 0xFF)
-                | ((src[1] & 0xFF) << 8)
-                | ((src[2] & 0xFF) << 16)
-                | ((src[3] & 0xFF) << 24);
+        int value = ((src[0] & 0xFF) << 24)
+                | ((src[1] & 0xFF) << 16)
+                | ((src[2] & 0xFF) << 8)
+                | (src[3] & 0xFF);
         return value;
     }
 }

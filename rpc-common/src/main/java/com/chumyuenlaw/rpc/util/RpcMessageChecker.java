@@ -26,7 +26,7 @@ public class RpcMessageChecker
 {
     private static final String INTERFACE_NAME = "interfaceName";
 
-    private static Logger logger = LoggerFactory.getLogger(RpcMessageChecker.class);
+    private static final Logger logger = LoggerFactory.getLogger(RpcMessageChecker.class);
 
     private RpcMessageChecker()
     {

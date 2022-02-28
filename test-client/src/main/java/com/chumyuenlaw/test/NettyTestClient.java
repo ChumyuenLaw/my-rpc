@@ -1,5 +1,6 @@
 package com.chumyuenlaw.test;
 
+import com.chumyuenlaw.rpc.api.ByeService;
 import com.chumyuenlaw.rpc.loadbalancer.RoundRobinLoadBalancer;
 import com.chumyuenlaw.rpc.serializer.CommonSerializer;
 import com.chumyuenlaw.rpc.transport.RpcClient;
@@ -30,10 +31,13 @@ public class NettyTestClient
         RpcClient client = new NettyClient(CommonSerializer.PROTOBUF_SERIALIZER, new RoundRobinLoadBalancer());
         RpcClientProxy rpcClientProxy = new RpcClientProxy(client);
         HelloService helloService = rpcClientProxy.getProxy(HelloService.class);
+        ByeService byeService = rpcClientProxy.getProxy(ByeService.class);
         HelloObject helloObject = new HelloObject(12, "Netty test msg.");
-        for (int i = 0; i < 100; i++)
+        //for (int i = 0; i < 20; i++)
         {
             String res = helloService.hello(helloObject);
+            System.out.println(res);
+            res = byeService.bye("Netty");
             System.out.println(res);
         }
 

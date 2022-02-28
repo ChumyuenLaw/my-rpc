@@ -2,17 +2,11 @@ package com.chumyuenlaw.rpc.transport.socket.server;
 
 import com.chumyuenlaw.rpc.handler.RequestHandler;
 import com.chumyuenlaw.rpc.hook.ShutdownHook;
-import com.chumyuenlaw.rpc.provider.ServiceProvider;
 import com.chumyuenlaw.rpc.provider.ServiceProviderImpl;
 import com.chumyuenlaw.rpc.registry.NacosServiceRegistry;
-import com.chumyuenlaw.rpc.transport.RpcServer;
-import com.chumyuenlaw.rpc.enumeration.RpcError;
-import com.chumyuenlaw.rpc.exception.RpcException;
-import com.chumyuenlaw.rpc.registry.ServiceRegistry;
+import com.chumyuenlaw.rpc.transport.AbstractRpcServer;
 import com.chumyuenlaw.rpc.serializer.CommonSerializer;
 import com.chumyuenlaw.rpc.factory.ThreadPoolFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -20,19 +14,11 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.*;
 
-public class SocketServer implements RpcServer
+public class SocketServer extends AbstractRpcServer
 {
-    private static final Logger logger = LoggerFactory.getLogger(SocketServer.class);
-
     private final ExecutorService threadPool;
     private final RequestHandler requestHandler = new RequestHandler();
     private final CommonSerializer serializer;
-
-    private final String host;
-    private final int port;
-
-    private final ServiceProvider serviceProvider;
-    private final ServiceRegistry serviceRegistry;
 
     public SocketServer(String host, int port)
     {
@@ -47,6 +33,7 @@ public class SocketServer implements RpcServer
         serviceRegistry = new NacosServiceRegistry();
         serializer = CommonSerializer.getByCode(serializerCode);
         threadPool = ThreadPoolFactory.createDefaultThreadPool("socket-rpc-server");
+        scanServices();
     }
 
     @Override
@@ -68,18 +55,5 @@ public class SocketServer implements RpcServer
         {
             logger.error("服务器启动出错：", e);
         }
-    }
-
-    @Override
-    public <T> void publishService(T service, Class<T> serviceClass)
-    {
-        if (serializer == null)
-        {
-            logger.error("未设置序列化器");
-            throw new RpcException(RpcError.SERIALIZER_NOT_FOUND);
-        }
-        serviceProvider.addServiceProvider(service, serviceClass);
-        serviceRegistry.register(serviceClass.getCanonicalName(), new InetSocketAddress(host, port));
-        start();
     }
 }

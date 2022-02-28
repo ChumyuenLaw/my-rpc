@@ -1,10 +1,9 @@
 package com.chumyuenlaw.test;
 
-import com.chumyuenlaw.rpc.api.HelloService;
-import com.chumyuenlaw.rpc.enumeration.SerializerCode;
+import com.chumyuenlaw.rpc.annotation.ServiceScan;
 import com.chumyuenlaw.rpc.serializer.CommonSerializer;
 import com.chumyuenlaw.rpc.transport.netty.server.NettyServer;
-import com.chumyuenlaw.rpc.serializer.ProtostuffSerializer;
+
 
 /**
  * <pre>
@@ -20,13 +19,13 @@ import com.chumyuenlaw.rpc.serializer.ProtostuffSerializer;
  *    修改后版本:     修改人：  修改日期:     修改内容:
  * </pre>
  */
+@ServiceScan
 public class NettyTestServer
 {
     public static void main(String[] args)
     {
-        HelloService helloService = new HelloServiceImpl();
         NettyServer server = new NettyServer("127.0.0.1", 9002, CommonSerializer.PROTOBUF_SERIALIZER);
-        server.publishService(helloService, HelloService.class);
+        server.start();
         // nacos dir: D:\nacos-server-1.3.0\nacos\bin\startup.cmd
     }
 }

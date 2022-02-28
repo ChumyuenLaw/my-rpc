@@ -16,7 +16,7 @@ package com.chumyuenlaw.rpc.provider;
  */
 public interface ServiceProvider
 {
-    <T> void addServiceProvider(T service, Class<T> serviceClass);
+    <T> void addServiceProvider(T service, String serviceName);
 
     Object getServiceProvider(String serviceName);
 }

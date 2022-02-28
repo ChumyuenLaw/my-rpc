@@ -1,13 +1,9 @@
 package com.chumyuenlaw.rpc.transport.netty.server;
 
-import com.chumyuenlaw.rpc.enumeration.RpcError;
-import com.chumyuenlaw.rpc.exception.RpcException;
 import com.chumyuenlaw.rpc.hook.ShutdownHook;
-import com.chumyuenlaw.rpc.provider.ServiceProvider;
 import com.chumyuenlaw.rpc.provider.ServiceProviderImpl;
 import com.chumyuenlaw.rpc.registry.NacosServiceRegistry;
-import com.chumyuenlaw.rpc.registry.ServiceRegistry;
-import com.chumyuenlaw.rpc.transport.RpcServer;
+import com.chumyuenlaw.rpc.transport.AbstractRpcServer;
 import com.chumyuenlaw.rpc.codec.CommonDecoder;
 import com.chumyuenlaw.rpc.codec.CommonEncoder;
 import com.chumyuenlaw.rpc.serializer.CommonSerializer;
@@ -19,10 +15,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.timeout.IdleStateHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -39,15 +32,8 @@ import java.util.concurrent.TimeUnit;
  *    修改后版本:     修改人：  修改日期:     修改内容:
  * </pre>
  */
-public class NettyServer implements RpcServer
+public class NettyServer extends AbstractRpcServer
 {
-    private static final Logger logger = LoggerFactory.getLogger(NettyServer.class);
-
-    private final String host;
-    private final int port;
-
-    private final ServiceRegistry serviceRegistry;
-    private final ServiceProvider serviceProvider;
     private final CommonSerializer serializer;
 
     public NettyServer(String host, int port)
@@ -62,6 +48,7 @@ public class NettyServer implements RpcServer
         serializer = CommonSerializer.getByCode(serializerCode);
         serviceRegistry = new NacosServiceRegistry();
         serviceProvider = new ServiceProviderImpl();
+        scanServices();
     }
 
     @Override
@@ -104,18 +91,5 @@ public class NettyServer implements RpcServer
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
         }
-    }
-
-    @Override
-    public <T> void publishService(T service, Class<T> serviceClass)
-    {
-        if (serializer == null)
-        {
-            logger.error("未设置序列化器");
-            throw new RpcException(RpcError.SERIALIZER_NOT_FOUND);
-        }
-        serviceProvider.addServiceProvider(service, serviceClass);
-        serviceRegistry.register(serviceClass.getCanonicalName(), new InetSocketAddress(host, port));
-        start();
     }
 }

@@ -3,8 +3,6 @@ package com.chumyuenlaw.rpc.transport.netty.server;
 import com.chumyuenlaw.rpc.handler.RequestHandler;
 import com.chumyuenlaw.rpc.entity.RpcRequest;
 import com.chumyuenlaw.rpc.factory.ThreadPoolFactory;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.timeout.IdleState;

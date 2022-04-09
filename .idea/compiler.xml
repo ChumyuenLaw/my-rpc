@@ -8,19 +8,44 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="test-server" />
-        <module name="rpc-api" />
-        <module name="rpc-core" />
-        <module name="rpc-common" />
         <module name="test-client" />
+        <module name="test-client-2" />
+        <module name="rpc-common" />
+        <module name="canteen-management-server-1" />
+        <module name="canteen-management-client" />
+        <module name="canteen-management-server-3" />
+        <module name="rpc-core" />
+        <module name="test-server-2" />
+        <module name="rpc-api" />
+        <module name="canteen-management-server-2" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="canteen-management-client" target="1.8" />
+      <module name="canteen-management-server-1" target="1.8" />
+      <module name="canteen-management-server-2" target="1.8" />
+      <module name="canteen-management-server-3" target="1.8" />
+      <module name="canteen-management-server1" target="1.8" />
+      <module name="demo" target="1.8" />
       <module name="my-rpc" target="1.8" />
       <module name="rpc-api" target="1.8" />
       <module name="rpc-common" target="1.8" />
       <module name="rpc-core" target="1.8" />
       <module name="test-client" target="1.8" />
+      <module name="test-client-2" target="1.8" />
       <module name="test-server" target="1.8" />
+      <module name="test-server-2" target="1.8" />
+      <module name="test-server-2 (1)" target="11" />
     </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="canteen-management-client" options="-parameters" />
+      <module name="canteen-management-server-1" options="-parameters" />
+      <module name="canteen-management-server-2" options="-parameters" />
+      <module name="canteen-management-server-3" options="-parameters" />
+      <module name="canteen-management-server1" options="-parameters" />
+      <module name="demo" options="-parameters" />
+    </option>
   </component>
 </project>

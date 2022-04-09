@@ -69,7 +69,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<RpcRequest>
                 logger.info("接收到客户端心跳包...");
                 return;
             }
-            logger.info("服务端接收请求：{}", msg);
+            //logger.info("服务端接收请求：{}", msg);
 
             Object response = requestHandler.handle(msg);
             if (channelHandlerContext.channel().isActive() && channelHandlerContext.channel().isWritable())

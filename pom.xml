@@ -14,6 +14,8 @@
         <module>rpc-api</module>
         <module>rpc-core</module>
         <module>rpc-common</module>
+        <module>test-server-2</module>
+        <module>test-client-2</module>
     </modules>
 
     <build>

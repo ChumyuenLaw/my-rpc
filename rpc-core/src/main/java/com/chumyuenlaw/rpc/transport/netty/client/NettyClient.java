@@ -89,7 +89,6 @@ public class NettyClient implements RpcClient
         try
         {
             InetSocketAddress inetSocketAddress = serviceDiscovery.lookupService(rpcRequest.getInterfaceName());
-            //logger.info("得到服务器地址：" + inetSocketAddress.getHostName() + ":" + inetSocketAddress.getPort());
             Channel channel = ChannelProvider.get(inetSocketAddress, serializer);
             if (!channel.isActive())
             {
@@ -108,6 +107,12 @@ public class NettyClient implements RpcClient
                     resultFuture.completeExceptionally(future1.cause());
                     logger.error("发送信息时有错误发生：", future1.cause());
                 }
+//                if(!future1.isSuccess())
+//                {
+//                    future1.channel().close();
+//                    resultFuture.completeExceptionally(future1.cause());
+//                    logger.error("发送信息时有错误发生：", future1.cause());
+//                }
             });
         } catch (Exception e)
         {

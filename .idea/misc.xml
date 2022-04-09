@@ -4,6 +4,10 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/canteen-management-client/pom.xml" />
+        <option value="$PROJECT_DIR$/canteen-management-server-3/pom.xml" />
+        <option value="$PROJECT_DIR$/canteen-management-server-1/pom.xml" />
+        <option value="$PROJECT_DIR$/canteen-management-server-2/pom.xml" />
       </list>
     </option>
   </component>

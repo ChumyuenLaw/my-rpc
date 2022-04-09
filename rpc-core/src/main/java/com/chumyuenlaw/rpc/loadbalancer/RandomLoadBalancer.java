@@ -21,9 +21,15 @@ import java.util.Random;
  */
 public class RandomLoadBalancer implements LoadBalancer
 {
+    private Integer index = 0;
+
     @Override
     public Instance select(List<Instance> instances)
     {
-        return instances.get(new Random().nextInt(instances.size()));
+        synchronized (index)
+        {
+            index = new Random().nextInt(instances.size());
+            return instances.get(index);
+        }
     }
 }

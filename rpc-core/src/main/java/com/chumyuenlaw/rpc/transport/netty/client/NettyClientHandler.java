@@ -67,7 +67,7 @@ public class NettyClientHandler extends SimpleChannelInboundHandler<RpcResponse>
     {
         try
         {
-            logger.info(String.format("客户端接收到消息：%s", msg));
+            //logger.info(String.format("客户端接收到消息：%s", msg));
             unprocessedRequest.complete(msg);
         } finally
         {

@@ -27,5 +27,6 @@ public class NettyTestServer
         NettyServer server = new NettyServer("127.0.0.1", 9002, CommonSerializer.PROTOBUF_SERIALIZER);
         server.start();
         // nacos dir: D:\nacos-server-1.3.0\nacos\bin\startup.cmd
+
     }
 }
